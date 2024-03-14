@@ -1,0 +1,31 @@
+ .con{
+    width: 100vw;
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contain1{
+    width: 30vw;
+    height: 40vh;
+    border-radius: 2rem ;
+}
+
+.log{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn{
+    width: inherit;
+}
+
+.colr1{
+    background-color:  #50c878d0; 
+}
+.colr1:hover{
+    background-color: #50c878d0;
+} 
