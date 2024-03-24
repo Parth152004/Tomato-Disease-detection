@@ -21,8 +21,17 @@ export default function Login() {
       const response = await axios.post('http://localhost:3001/api/otp-send', {
         email,
       })
+      console.log(response.data.message)
+      if (response.data.message == 'User is already registered') {
+        const s3DirectoryCreated = await createS3Directory(email)
 
-      if (response.status === 200) {
+        if (s3DirectoryCreated) {
+          localStorage.setItem('email', email)
+          navigate('/') // Pass email as state
+        } else {
+          setMessage('Error creating S3 directory')
+        }
+      } else if (response.status === 200) {
         // Create an S3 directory when the user logs in
         const s3DirectoryCreated = await createS3Directory(email)
 
@@ -37,6 +46,7 @@ export default function Login() {
         setMessage('Login failed. Please check your email and try again.')
       }
     } catch (error) {
+      console.log(error)
       console.error('Error calling backend:', error)
       setMessage('An error occurred. Please try again later.')
     }
@@ -61,7 +71,7 @@ export default function Login() {
           </div>
           <button
             type="button"
-            className={`colr1 mb-4 btn`}
+            className={`colr1 mb-4 btn1221`}
             onClick={handleSubmit}
           >
             Login

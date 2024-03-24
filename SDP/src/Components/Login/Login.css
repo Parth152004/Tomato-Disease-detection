@@ -19,13 +19,18 @@
     justify-content: center;
 }
 
-.btn{
+.btn1221{
     width: inherit;
+    background-color: green;
+    border: none;
+    border-radius: 2px ;
 }
 
-.colr1{
-    background-color:  #50c878d0; 
+
+@media(max-width:450px) {
+    .contain1{
+        width: 100vw;
+        height: 40vh;
+        border-radius: 2rem ;
+    }
 }
-.colr1:hover{
-    background-color: #50c878d0;
-} 

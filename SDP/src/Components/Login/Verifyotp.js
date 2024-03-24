@@ -47,7 +47,7 @@ export default function Verifyotp() {
     <>
       <Navbar />
       <form className="con">
-        <div className="container">
+        <div className="contain1">
           <div className="form-outline mb-4">
             <label className="form-label" htmlFor="form2Example1">
               Verify OTP
@@ -62,7 +62,7 @@ export default function Verifyotp() {
           </div>
           <button
             type="button" // Should be "button" for form submission
-            className={`btn colr btn-block mb-4 btn`}
+            className={`colr btn-block mb-4 btn1221`}
             onClick={handleonsubmit}
           >
             Verify

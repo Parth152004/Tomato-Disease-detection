@@ -58,6 +58,7 @@ h2{
     .main{
         display: flex;
         flex-direction: column;
+        margin: 0px;
         /* background: rgb(18,196,18);
         background: radial-gradient(circle, rgba(18,196,18,1) 0%, rgba(158,233,148,1) 100%); */
     }

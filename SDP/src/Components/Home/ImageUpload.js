@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Image.css' // Import the CSS
 import { Link } from 'react-router-dom'
 import AWS from 'aws-sdk'
@@ -16,6 +16,7 @@ const ImageUpload = () => {
   const defaultImageURL = process.env.PUBLIC_URL + '/insert.jpg' // Replace with the actual path
   const [selectedImage, setSelectedImage] = useState(null)
   const [predictions, setPredictions] = useState(null)
+  const [imageLabels, setImageLabels] = useState([])
   const [index, setIndex] = useState()
   const [lable, setlable] = useState()
 
@@ -60,17 +61,6 @@ const ImageUpload = () => {
       Body: selectedImage,
     }
 
-    // Upload the image to S3
-    s3.upload(params, (err, data) => {
-      if (err) {
-        console.error('Error uploading image to S3:', err)
-        return
-      }
-
-      console.log('Image uploaded to S3:', data.Location)
-      // Do any additional logic after image upload if needed
-    })
-
     fetch('http://localhost:3005/predict', {
       method: 'POST',
       body: formData,
@@ -114,6 +104,25 @@ const ImageUpload = () => {
           setPredictions(data.predictions[0])
           setIndex(maxIndex)
           setlable(lable)
+
+          const s3Params = {
+            Bucket: bucketName,
+            Key: fileKey,
+            Body: selectedImage,
+            Metadata: {
+              PredictedLabel: lable,
+            },
+          }
+          // Upload the image to S3
+          s3.putObject(s3Params, (err, data) => {
+            if (err) {
+              console.error('Error uploading image to S3:', err)
+              return
+            }
+            const uploadedLocation = `https://${bucketName}.s3.amazonaws.com/${fileKey}`
+            console.log('Image uploaded to S3:', uploadedLocation)
+            // Do any additional logic after image upload if needed
+          })
         } else {
           console.log('No predictions found in the response')
         }
@@ -121,61 +130,158 @@ const ImageUpload = () => {
       .catch((error) => console.error('Error:', error))
   }
 
+  const fetchUserImagesAndLabels = () => {
+    const userDirectoryKey = `user_directories/${localStorage.getItem(
+      'email',
+    )}/`
+
+    // List objects in the S3 bucket with the user's directory key as prefix
+    s3.listObjectsV2(
+      { Bucket: bucketName, Prefix: userDirectoryKey },
+      (err, data) => {
+        if (err) {
+          console.error('Error listing objects in S3:', err)
+          return
+        }
+
+        // Extract the list of objects from the response data
+        const objects = data.Contents
+
+        // Filter objects to only include those that belong to the user
+        const userObjects = objects.filter((object) =>
+          object.Key.startsWith(userDirectoryKey),
+        )
+
+        // Create an array to store image keys and predicted labels
+        const imageLabelsArray = userObjects.map((object) => {
+          const objectKey = object.Key
+          const label =
+            object.Metadata && object.Metadata['x-amz-meta-predictedlabel'] // Check if metadata exists before accessing the predicted label
+          const imageUrl = `https://${bucketName}.s3.amazonaws.com/${objectKey}` // Construct image URL
+          console.log('Image URL:', imageUrl) // Log the image URL for debugging
+          return { imageUrl, label: label || 'Label not available' }
+        })
+
+        // Update the state with the image URLs and predicted labels
+        setImageLabels(imageLabelsArray)
+      },
+    )
+  }
+
+  useEffect(() => {
+    fetchUserImagesAndLabels()
+  }, [])
+
+  const handleClickFunction = () => {
+    // Construct the user directory key
+    const userDirectoryKey = `user_directories/${localStorage.getItem(
+      'email',
+    )}/`
+
+    // List objects in the S3 bucket with the user's directory key as prefix
+    s3.listObjectsV2(
+      { Bucket: bucketName, Prefix: userDirectoryKey },
+      (err, data) => {
+        if (err) {
+          console.error('Error listing objects in S3:', err)
+          return
+        }
+
+        // Extract the list of objects from the response data
+        const objects = data.Contents
+
+        // Filter objects to only include those that belong to the user
+        const userObjects = objects.filter((object) =>
+          object.Key.startsWith(userDirectoryKey),
+        )
+
+        // Iterate over user's objects and display their keys and labels
+        userObjects.forEach((object) => {
+          // Extract the key and label from the object
+          const objectKey = object.Key
+          const label =
+            object.Metadata && object.Metadata['x-amz-meta-predictedlabel'] // Check if metadata exists before accessing the predicted label
+
+          // Display the key and label (you can customize this part to display images if needed)
+          console.log('Image Key:', objectKey)
+          console.log('Predicted Label:', label)
+        })
+      },
+    )
+  }
+
   return (
-    <div className="image-upload-container">
-      {selectedImage && (
-        <div className="selected-image">
-          <img
-            alt="not found"
-            width={'400px'}
-            height={'400px'}
-            src={URL.createObjectURL(selectedImage)}
-          />
-          <br />
-          <button onClick={handleRemove}>Remove</button>
+    <>
+      {/* <div className="image-upload-container">
+        <h2>User Image History</h2>
+        <div className="image-list">
+          {imageLabels.map((imageLabel, index) => (
+            <div key={index} className="image-item">
+              <img
+                src={`https://${bucketName}.s3.amazonaws.com/${imageLabel.key}`}
+                alt="User Image"
+              />
+              <p>Predicted Label: {imageLabel.label}</p>
+            </div>
+          ))}
         </div>
-      )}
+      </div> */}
+      <div className="image-upload-container">
+        {selectedImage && (
+          <div className="selected-image">
+            <img
+              alt="not found"
+              width={'400px'}
+              height={'400px'}
+              src={URL.createObjectURL(selectedImage)}
+            />
+            <br />
+            <button onClick={handleRemove}>Remove</button>
+            <button onClick={handleImageClick}>Upload</button>
+          </div>
+        )}
 
-      {!selectedImage && (
-        <div className="default-image" onClick={handleImageClick}>
-          <img
-            alt="default"
-            width={'400px'}
-            height={'400px'}
-            src={defaultImageURL}
-          />
-        </div>
-      )}
+        {!selectedImage && (
+          <div className="default-image" onClick={handleImageClick}>
+            <img
+              alt="default"
+              width={'400px'}
+              height={'400px'}
+              src={defaultImageURL}
+            />
+          </div>
+        )}
 
-      <br />
-      <br />
+        <br />
+        <br />
 
-      <input
-        type="file"
-        name="myImage"
-        onChange={handleImageChange}
-        style={{ display: 'none' }}
-      />
+        <input
+          type="file"
+          name="myImage"
+          onChange={handleImageChange}
+          style={{ display: 'none' }}
+        />
 
-      {selectedImage && (
-        <div>
-          <button onClick={handlePredict}>Predict</button>
-          {predictions && (
-            <div className="predictions">
-              <h3>Predictions:</h3>
-              <ul>
-                <Link to="/Diseaseinfo">
-                  {/* {predictions.map((prediction, index) => (
+        {selectedImage && (
+          <div className="selected-image1">
+            <button onClick={handlePredict}>Predict</button>
+            {predictions && (
+              <div className="predictions">
+                <h3>Predictions:</h3>
+                <ul>
+                  <Link to="/Diseaseinfo">
+                    {/* {predictions.map((prediction, index) => (
                   <li key={index}>{prediction}</li>
                 ))} */}
-                  {lable}
-                </Link>
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+                    {lable}
+                  </Link>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   )
 }
 

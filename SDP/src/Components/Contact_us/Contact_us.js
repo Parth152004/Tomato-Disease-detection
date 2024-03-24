@@ -29,35 +29,8 @@ export default function Contact_us() {
               <label>Email:</label>
 
               <span>
-                {/* <FaEnvelope /> info@drplant.com */}
+                patelparth1167@gmail.com
               </span>
-            </div>
-
-            <div className="social-media-icons">
-              <label>Social Media:</label>
-              <div className="icon">
-                {/* <a
-                  href="https://www.facebook.com/yourpage"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaFacebook />
-                </a>
-                <a
-                  href="https://www.twitter.com/yourhandle"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaTwitter />
-                </a>
-                <a
-                  href="https://www.instagram.com/youraccount"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaInstagram />
-                </a> */}
-              </div>
             </div>
 
             <div className="phone">
@@ -65,8 +38,7 @@ export default function Contact_us() {
 
               <span>
                 {' '}
-                {/* <FaPhone /> */}
-                +1 (123) 456-7890
+                +91 9438780513
               </span>
             </div>
           </div>
