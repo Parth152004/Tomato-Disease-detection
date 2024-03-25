@@ -20,7 +20,7 @@ h2{
 .Image{
    border-radius: 10px ;
     width: 100%;
-    height: 100%;
+    height: auto;
     /* background-color: gray; */
     /* background-image: url('https://cdn.pixabay.com/photo/2022/03/05/01/48/plant-7048223_1280.jpg'); */
     /* background-color:  #94b44476; */
@@ -37,7 +37,7 @@ h2{
 .disease{
 
     width: 60%;
-    height: 100%;
+    height: auto;
     /* background-color: rgb(31, 164, 164); */
 
 }

@@ -12,6 +12,7 @@ import Services from './Components/Services/Services'
 import Login from './Components/Login/Login'
 import Verifyotp from './Components/Login/Verifyotp'
 import Diseaseinfo from './Components/DiseaseInfo/Diseaseinfo'
+import Subscribe from './Components/Subscribe/Subscribe'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/Login" element={<Login />}></Route>
           <Route path="/Verifyotp" element={<Verifyotp />} />
           <Route path="/Diseaseinfo" element={<Diseaseinfo />} />
+          <Route path="/Subscribe" element={<Subscribe />} />
         </Routes>
       </BrowserRouter>
     </div>

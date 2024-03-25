@@ -4,7 +4,6 @@ import './Home.css'
 import Navbar from '../Navbar'
 import { useNavigate } from 'react-router-dom'
 import Info from '../Info'
-import Loading from '../Loading/Loading'
 
 const Home = () => {
   const navigate = useNavigate()

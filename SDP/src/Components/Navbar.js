@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import './Navbar.css'; // Import your CSS file
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react'
+import './Navbar.css' // Import your CSS file
+import { Link } from 'react-router-dom'
 
 export default function Navbar() {
-  const [isCollapsed, setIsCollapsed] = useState(true); // Initial collapsed state
+  const [isCollapsed, setIsCollapsed] = useState(true) // Initial collapsed state
 
   const handleToggle = () => {
-    setIsCollapsed(!isCollapsed); // Toggle collapse state on button click
-  };
+    setIsCollapsed(!isCollapsed) // Toggle collapse state on button click
+  }
 
   return (
     <div className="colr navbar navbar-expand-lg shape">
@@ -53,13 +53,21 @@ export default function Navbar() {
               </Link>
             </li>
             <li className="nav-item blockl">
-              <Link className="nav-link navbar-brand centered-link" to="/Login">
+              <Link className="nav-link navbar-brand centered-link blockl23" to="/Login">
                 Login
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="nav-link navbar-brand centered-link blockl23"
+                to="/Subscribe"
+              >
+                Subscribe
               </Link>
             </li>
           </ul>
         </div>
       </nav>
     </div>
-  );
+  )
 }

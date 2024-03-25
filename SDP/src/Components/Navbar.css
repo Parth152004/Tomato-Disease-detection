@@ -52,7 +52,8 @@ li{
     height: auto; /* Allow content to expand */
   }
 
-  .blockl{
+  .blockl23{
+    margin-left: 5px;
     background-color: #ffffff;
     border-radius: 10px;
   }
